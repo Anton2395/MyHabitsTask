@@ -8,6 +8,8 @@ import UIKit
 
 class HabitViewController: UIViewController {
     
+    private let store = HabitsStore.shared
+    
     private lazy var labelName: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -50,18 +52,27 @@ class HabitViewController: UIViewController {
         return label
     }()
     
-    private lazy var timeLine: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Каждый день в 11:00 PM"
-        label.font = UIFont(name: "SFProText-Regular", size: 17)
-        return label
-    }()
     
     private lazy var timePicker: UIDatePicker = {
         let timePicker = UIDatePicker()
         timePicker.translatesAutoresizingMaskIntoConstraints = false
+        timePicker.datePickerMode = UIDatePicker.Mode.time
+        timePicker.minuteInterval = 1
+        timePicker.preferredDatePickerStyle = .wheels
+        timePicker.locale = Locale(identifier: "en-US")
+        timePicker.timeZone = TimeZone(identifier: "Europe/Minsk")
+        timePicker.roundsToMinuteInterval = true
+        timePicker.addTarget(self, action: #selector(setDateToTextLine), for: .allEvents)
         return timePicker
+    }()
+    
+    
+    private lazy var timeLine: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Каждый день в \(getTimeString(from: timePicker.date))"
+        label.font = UIFont(name: "SFProText-Regular", size: 17)
+        return label
     }()
     
     
@@ -168,12 +179,32 @@ class HabitViewController: UIViewController {
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
+    func getTimeString(from: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a"
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter.string(from: from)
+    }
+    
     @objc func tapSave() {
         print("save")
+        if let name = nameTextField.text, let color = colorPicker.selectedColor {
+            let habit = Habit(name: name, date: timePicker.date, color: color)
+            store.habits.append(habit)
+            navigationController?.popViewController(animated:true)
+        } else {
+            print("You should fill all fields")
+        }
+        
+        
     }
     
     @objc func tapCancel() {
-        print("cansel")
+        navigationController?.popViewController(animated:true)
+    }
+    
+    @objc func setDateToTextLine() {
+        timeLine.text = "Каждый день в \(getTimeString(from: timePicker.date))"
     }
     
     

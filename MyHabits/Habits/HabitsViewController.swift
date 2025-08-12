@@ -8,6 +8,9 @@
 import UIKit
 
 class HabitsViewController: UIViewController {
+//    private let store = HabitsStore.shared
+    private let dataSorceDelegate = HabitsCollectionDataSorceDelegate()
+    
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Сегодня"
@@ -17,16 +20,17 @@ class HabitsViewController: UIViewController {
         return label
     }()
     
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .plain)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = UIColor(red: 242/255, green: 242/255, blue: 247/255, alpha: 1.0)
-        
-        return tableView
+    private lazy var collectionView: UICollectionView = {
+        let viewLayout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: viewLayout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = UIColor(red: 242/255, green: 242/255, blue: 247/255, alpha: 1.0)
+        collectionView.register(HabitCollectionViewCell.self, forCellWithReuseIdentifier: CellReuseID.base.rawValue)
+        return collectionView
     }()
     
     private enum CellReuseID: String {
-        case base = "HabitTableViewCell_ReuseID"
+        case base = "HabitCollectionViewCell_ReuseID"
     }
     
     override func viewDidLoad() {
@@ -37,43 +41,40 @@ class HabitsViewController: UIViewController {
         setConstraints()
         
         setupNavigationBarAppearance()
-        tuneTableView()
+        setupCollectionView()
     }
+    
     
     func setupView() {
 //        self.title = "Привычки"
     }
     
     func setSubview() {
-        view.addSubview(tableView)
+        view.addSubview(collectionView)
     }
     
     func setConstraints() {
         let safeArea = view.safeAreaLayoutGuide
         
         NSLayoutConstraint.activate([
-            tableView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
-            tableView.topAnchor.constraint(equalTo: safeArea.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor)
+            collectionView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            collectionView.topAnchor.constraint(equalTo: safeArea.topAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor)
         ])
     }
     
-    func tuneTableView() {
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 300.0
-        
-        tableView.tableHeaderView = UIView()
-        tableView.tableFooterView = UIView()
-        
-        tableView.register(HabitTableViewCell.self, forCellReuseIdentifier: CellReuseID.base.rawValue)
-        
+    func setupCollectionView() {
+        collectionView.dataSource = dataSorceDelegate
+        collectionView.delegate = dataSorceDelegate
     }
     
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(false, animated: true)
+        dataSorceDelegate.updateStore()
+        collectionView.reloadData()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
