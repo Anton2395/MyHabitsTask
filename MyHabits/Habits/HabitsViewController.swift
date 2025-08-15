@@ -35,6 +35,7 @@ class HabitsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        dataSorceDelegate.navigationController = navigationController
         
         setupView()
         setSubview()

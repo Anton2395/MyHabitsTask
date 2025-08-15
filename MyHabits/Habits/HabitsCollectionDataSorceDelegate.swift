@@ -9,6 +9,7 @@ import UIKit
 
 class HabitsCollectionDataSorceDelegate: NSObject, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     private var store = HabitsStore.shared
+    weak var navigationController: UINavigationController?
     
     func updateStore() {
         store = HabitsStore.shared
@@ -75,7 +76,9 @@ class HabitsCollectionDataSorceDelegate: NSObject, UICollectionViewDataSource, U
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath.row)
+        let view = HabitDetailsViewController(habit: store.habits[indexPath.row])
+        navigationController?.pushViewController(view, animated: true)
+        
     }
 
 }
