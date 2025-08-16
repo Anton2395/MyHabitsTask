@@ -26,6 +26,10 @@ class HabitsCollectionDataSorceDelegate: NSObject, UICollectionViewDataSource, U
         ) as! HabitCollectionViewCell
         let habit = store.habits[indexPath.row]
         cell.update(habit)
+        cell.onToggle = { [weak collectionView, weak self] in
+            self?.updateStore()
+            collectionView?.reloadData()
+        }
         return cell
     }
     
@@ -79,6 +83,22 @@ class HabitsCollectionDataSorceDelegate: NSObject, UICollectionViewDataSource, U
         let view = HabitDetailsViewController(habit: store.habits[indexPath.row])
         navigationController?.pushViewController(view, animated: true)
         
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        switch kind {
+            
+        case UICollectionView.elementKindSectionHeader:
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "HabitCollectionHeader_ReuseID", for: indexPath) as! HabitCollectionHeader
+            header.updateParam(progress: store.todayProgress)
+            return header
+        default:
+            return UICollectionReusableView()
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: collectionView.frame.width, height: 82.0)
     }
 
 }

@@ -71,11 +71,13 @@ class HabitDetailsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(false, animated: true)
+        dataSorceDelegate.updateStore()
         tableView.reloadData()
+        setupView()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+        super.viewWillDisappear(animated)
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
@@ -150,6 +152,8 @@ class HabitDetailsViewController: UIViewController {
     }
     
     @objc func tapEdit() {
-        navigationController?.pushViewController(HabitViewController(), animated: true)
+        let editeView = HabitViewController(habit: habit)
+        
+        navigationController?.pushViewController(editeView, animated: true)
     }
 }

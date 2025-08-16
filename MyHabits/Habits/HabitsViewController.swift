@@ -26,11 +26,13 @@ class HabitsViewController: UIViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = UIColor(red: 242/255, green: 242/255, blue: 247/255, alpha: 1.0)
         collectionView.register(HabitCollectionViewCell.self, forCellWithReuseIdentifier: CellReuseID.base.rawValue)
+        collectionView.register(HabitCollectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CellReuseID.header.rawValue)
         return collectionView
     }()
     
     private enum CellReuseID: String {
         case base = "HabitCollectionViewCell_ReuseID"
+        case header = "HabitCollectionHeader_ReuseID"
     }
     
     override func viewDidLoad() {
@@ -79,7 +81,7 @@ class HabitsViewController: UIViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+        super.viewWillDisappear(animated)
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     

@@ -7,8 +7,22 @@
 import UIKit
 
 class HabitViewController: UIViewController {
-    
+    let habit: Habit?
     private let store = HabitsStore.shared
+    
+    init(habit: Habit) {
+        self.habit = habit
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    init() {
+        habit = nil
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     private lazy var labelName: UILabel = {
         let label = UILabel()
@@ -35,13 +49,14 @@ class HabitViewController: UIViewController {
         return label
     }()
     
-    private lazy var colorPicker: UIColorWell = {
-        let colorPicker = UIColorWell()
-        colorPicker.translatesAutoresizingMaskIntoConstraints = false
-        colorPicker.selectedColor = .red
-        colorPicker.layer.borderWidth = 0
+    private lazy var colorPicker: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = UIColor.random
+        button.layer.cornerRadius = 15
         
-        return colorPicker
+        button.addTarget(self, action: #selector(showColorPicker), for: .touchUpInside)
+        return button
     }()
     
     private lazy var labelTime: UILabel = {
@@ -75,6 +90,17 @@ class HabitViewController: UIViewController {
         return label
     }()
     
+    private lazy var deleteButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Удалить привычку", for: .normal)
+        button.titleLabel?.font = UIFont(name: "SFProText-Regular", size: 17)
+        button.setTitleColor(UIColor(red: 255/255, green: 59/255, blue: 48/255, alpha: 1.0), for: .normal)
+        
+        button.addTarget(self, action: #selector(tapDeleteButton), for: .touchUpInside)
+        return button
+    }()
+    
     
     
     override func viewDidLoad() {
@@ -88,8 +114,14 @@ class HabitViewController: UIViewController {
     }
     
     func setupView() {
-        self.title = "Создать"
-        
+        if let habit = self.habit {
+            nameTextField.text = habit.name
+            colorPicker.backgroundColor = habit.color
+            timePicker.date = habit.date
+            self.title = "Править"
+        } else {
+            self.title = "Создать"
+        }
     }
     
     func addSubview() {
@@ -100,6 +132,9 @@ class HabitViewController: UIViewController {
         view.addSubview(labelTime)
         view.addSubview(timeLine)
         view.addSubview(timePicker)
+        if habit != nil {
+            view.addSubview(deleteButton)
+        }
     }
     
     func setConstraints() {
@@ -131,11 +166,16 @@ class HabitViewController: UIViewController {
             timePicker.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -7),
             timePicker.topAnchor.constraint(equalTo: timeLine.bottomAnchor, constant: 7),
             timePicker.heightAnchor.constraint(equalToConstant: 100),
-            
-            
-            
-            
         ])
+        
+        if habit != nil {
+            NSLayoutConstraint.activate([
+                deleteButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
+                deleteButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+                deleteButton.widthAnchor.constraint(equalTo: safeArea.widthAnchor),
+                deleteButton.heightAnchor.constraint(equalToConstant: 44)
+            ])
+        }
     }
     
     
@@ -175,7 +215,7 @@ class HabitViewController: UIViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+        super.viewWillDisappear(animated)
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
@@ -186,14 +226,33 @@ class HabitViewController: UIViewController {
         return formatter.string(from: from)
     }
     
+    @objc func showColorPicker() {
+        let picker = UIColorPickerViewController()
+        picker.delegate = self
+        picker.selectedColor = colorPicker.backgroundColor ?? UIColor.random
+        present(picker, animated: true)
+    }
+    
     @objc func tapSave() {
-        print("save")
-        if let name = nameTextField.text, let color = colorPicker.selectedColor {
-            let habit = Habit(name: name, date: timePicker.date, color: color)
-            store.habits.append(habit)
-            navigationController?.popViewController(animated:true)
+        if let habit = self.habit {
+            print("edit")
+            if let name = nameTextField.text, let color = colorPicker.backgroundColor {
+                habit.name = name
+                habit.color = color
+                habit.date = timePicker.date
+                store.save()
+                navigationController?.popViewController(animated:true)
+            }
+            
         } else {
-            print("You should fill all fields")
+            print("save")
+            if let name = nameTextField.text, let color = colorPicker.backgroundColor {
+                let habit = Habit(name: name, date: timePicker.date, color: color)
+                store.habits.append(habit)
+                navigationController?.popViewController(animated:true)
+            } else {
+                print("You should fill all fields")
+            }
         }
         
         
@@ -207,5 +266,28 @@ class HabitViewController: UIViewController {
         timeLine.text = "Каждый день в \(getTimeString(from: timePicker.date))"
     }
     
+    @objc func tapDeleteButton() {
+        print("tap delete")
+        if let habit = self.habit {
+            let alert = UIAlertController(
+                title: "Удалить привычку",
+                message: "Вы хотите удалить привычку \"\(habit.name)\"?",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: "Отмена", style: .cancel, handler: nil))
+            alert.addAction(UIAlertAction(title: "Удалить", style: .destructive, handler: { _ in
+                self.store.remove(habit)
+                self.navigationController?.popToRootViewController(animated: true)
+            }))
+            present(alert, animated: true)
+        }
+    }
     
+}
+
+
+extension HabitViewController: UIColorPickerViewControllerDelegate {
+    func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {
+        colorPicker.backgroundColor = viewController.selectedColor
+    }
 }

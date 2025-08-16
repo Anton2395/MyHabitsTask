@@ -148,6 +148,13 @@ public final class HabitsStore {
         }
     }
     
+    public func remove(_ habit: Habit) {
+        if let index = habits.firstIndex(of: habit) {
+            habits.remove(at: index)
+            save()
+        }
+    }
+    
     /// Добавляет текущую дату в trackDates для переданной привычки.
     /// - Parameter habit: Привычка, в которую добавится новая дата.
     public func track(_ habit: Habit) {

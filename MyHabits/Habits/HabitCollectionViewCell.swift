@@ -7,7 +7,7 @@
 import UIKit
 
 class HabitCollectionViewCell: UICollectionViewCell {
-    
+    var onToggle: (() -> Void)?
     private var habit: Habit?
     
     private lazy var habitName: UILabel = {
@@ -114,6 +114,8 @@ class HabitCollectionViewCell: UICollectionViewCell {
                     self.imageIndicatorView.transform = .identity
                 }
             }
+            
+            onToggle?()
         }
     }
 }

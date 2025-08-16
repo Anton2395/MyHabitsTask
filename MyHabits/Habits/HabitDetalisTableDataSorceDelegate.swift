@@ -7,30 +7,17 @@
 import UIKit
 
 class HabitDetalisTableDataSorceDelegate: NSObject, UITableViewDataSource, UITableViewDelegate {
-    let store = HabitsStore.shared
+    var store = HabitsStore.shared
     var habit: Habit
-    var dateList: [String?] = []
         
     
     init(habit: Habit) {
         self.habit = habit
         super.init()
-        self.dateList = makeDateList()
     }
     
-    func makeDateList() -> [String?] {
-        var dateList: [String?] = []
-        for (index, _) in store.dates.enumerated() {
-//            print(index, store.dates.count, date)
-//            if index == store.dates.count-1 {
-//                dateList.append("Вчера")
-//            } else if index == store.dates.count-2 {
-//                dateList.append("Позавчера")
-//            } else {
-            dateList.append(store.trackDateString(forIndex: index))
-//            }
-        }
-        return dateList
+    func updateStore() {
+        store = HabitsStore.shared
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -49,7 +36,9 @@ class HabitDetalisTableDataSorceDelegate: NSObject, UITableViewDataSource, UITab
             fatalError("could not dequeueReusableCell")
         }
         
-        cell.setData(date: store.trackDateString(forIndex: indexPath.row), isDone: store.habit(habit, isTrackedIn: store.dates[indexPath.row]))
+        let reversedIndex = store.dates.count - 1 - indexPath.row
+        let date = store.dates[reversedIndex]
+        cell.setData(date: store.trackDateString(forIndex: reversedIndex), isDone: store.habit(habit, isTrackedIn: date))
         
         return cell
     }
