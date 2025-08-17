@@ -13,14 +13,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let scene = (scene as? UIWindowScene) else { return }
         
         let window = UIWindow(windowScene: scene)
         
         let tabBarController = UITabBarController()
+        if #available(iOS 17.0, *) {
+            tabBarController.traitOverrides.userInterfaceIdiom = .phone
+        } else {
+            tabBarController.setOverrideTraitCollection(
+                UITraitCollection(userInterfaceIdiom: .phone),
+                forChild: tabBarController
+            )
+        }
         let habitsViewController = HabitsViewController()
         let infoViewController = InfoViewController()
         
@@ -29,8 +34,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         habitsViewController.tabBarItem = UITabBarItem(
             title: "Привычки",
-            image: UIImage(systemName: "house"),
-            selectedImage: UIImage(systemName: "house.fill")
+            image: UIImage(named: "habitsTabBarIcon"),
+            selectedImage: UIImage(named: "habitsTabBarIcon")
         )
         
         infoNavigationController.tabBarItem = UITabBarItem(
@@ -40,9 +45,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
         
         
+        tabBarController.tabBar.tintColor = .systemPurple
         tabBarController.viewControllers = [habitsNavigationController, infoNavigationController]
         tabBarController.selectedIndex = 0
-        
         window.rootViewController = tabBarController
         window.makeKeyAndVisible()
         
