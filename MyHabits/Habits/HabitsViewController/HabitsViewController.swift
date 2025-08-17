@@ -8,7 +8,6 @@
 import UIKit
 
 class HabitsViewController: UIViewController {
-//    private let store = HabitsStore.shared
     private let dataSorceDelegate = HabitsCollectionDataSorceDelegate()
     
     private lazy var titleLabel: UILabel = {
@@ -110,16 +109,6 @@ class HabitsViewController: UIViewController {
             action: #selector(plusTapped)
         )
         navigationItem.rightBarButtonItem?.tintColor = .systemPurple
-        
-//        let container = UIView()
-//        container.translatesAutoresizingMaskIntoConstraints = false
-//        container.addSubview(titleLabel)
-//        
-//        NSLayoutConstraint.activate([
-//            titleLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-//            titleLabel.centerYAnchor.constraint(equalTo: container.centerYAnchor)
-//        ])
-//        navigationItem.titleView = container
     }
     
     

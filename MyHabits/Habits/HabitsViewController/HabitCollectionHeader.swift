@@ -48,7 +48,6 @@ class HabitCollectionHeader: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-//        tuneView()
         setSubviews()
         setConstraints()
     }
@@ -57,10 +56,6 @@ class HabitCollectionHeader: UICollectionReusableView {
         fatalError("Dont use coder")
     }
     
-    func tuneView() {
-        self.backgroundColor = UIColor.white
-
-    }
     
     func setSubviews() {
         container.addSubview(textLabel)
