@@ -21,6 +21,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: scene)
         
         let tabBarController = UITabBarController()
+        if #available(iOS 17.0, *) {
+            tabBarController.traitOverrides.userInterfaceIdiom = .phone
+        } else {
+            tabBarController.setOverrideTraitCollection(
+                UITraitCollection(userInterfaceIdiom: .phone),
+                forChild: tabBarController
+            )
+        }
         let habitsViewController = HabitsViewController()
         let infoViewController = InfoViewController()
         
@@ -29,8 +37,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         habitsViewController.tabBarItem = UITabBarItem(
             title: "Привычки",
-            image: UIImage(systemName: "house"),
-            selectedImage: UIImage(systemName: "house.fill")
+            image: UIImage(named: "habitsTabBarIcon"),
+            selectedImage: UIImage(named: "habitsTabBarIcon")
         )
         
         infoNavigationController.tabBarItem = UITabBarItem(
@@ -40,9 +48,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
         
         
+        tabBarController.tabBar.tintColor = .systemPurple
         tabBarController.viewControllers = [habitsNavigationController, infoNavigationController]
         tabBarController.selectedIndex = 0
-        
         window.rootViewController = tabBarController
         window.makeKeyAndVisible()
         

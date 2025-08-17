@@ -37,7 +37,8 @@ class HabitViewController: UIViewController {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "Бегать по утрам, спать 8 часов и т.п."
         textField.font = UIFont(name: "SFProText-Regular", size: 17)
-        
+        textField.keyboardType = .default
+        textField.returnKeyType = .done
         return textField
     }()
     
@@ -165,7 +166,7 @@ class HabitViewController: UIViewController {
             timePicker.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 7),
             timePicker.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -7),
             timePicker.topAnchor.constraint(equalTo: timeLine.bottomAnchor, constant: 7),
-            timePicker.heightAnchor.constraint(equalToConstant: 100),
+            timePicker.heightAnchor.constraint(equalToConstant: 216),
         ])
         
         if habit != nil {
@@ -184,21 +185,32 @@ class HabitViewController: UIViewController {
         
         navigationBarAppearance.configureWithDefaultBackground()
         navigationBarAppearance.backgroundColor = UIColor(red: 249/255, green: 249/255, blue: 249/255, alpha: 0.94)
+        
         navigationBarAppearance.titleTextAttributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.systemBlue
+            NSAttributedString.Key.foregroundColor: UIColor.black
         ]
+        navigationBarAppearance.buttonAppearance.normal.titleTextAttributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.systemPurple
+        ]
+        
         navigationBarAppearance.shadowColor = .lightGray
         
         navigationItem.standardAppearance = navigationBarAppearance
         navigationItem.compactAppearance = navigationBarAppearance
         navigationItem.scrollEdgeAppearance = navigationBarAppearance
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
+        let saveButton = UIBarButtonItem(
             title: "Сохранить",
             style: .plain,
             target: self,
             action: #selector(tapSave)
         )
+        saveButton.setTitleTextAttributes([
+            .font: UIFont.systemFont(ofSize: 17, weight: .semibold),
+            .foregroundColor: UIColor.systemPurple
+        ], for: .normal)
+        navigationItem.rightBarButtonItem = saveButton
+        
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             title: "Отменить",
             style: .plain,

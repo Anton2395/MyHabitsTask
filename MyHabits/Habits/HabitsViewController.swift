@@ -76,24 +76,27 @@ class HabitsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationItem.largeTitleDisplayMode = .always
         dataSorceDelegate.updateStore()
         collectionView.reloadData()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        navigationItem.largeTitleDisplayMode = .never
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
     func setupNavigationBarAppearance() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.title = "Сегодня"
         let navigationBarAppearance = UINavigationBarAppearance()
         
         navigationBarAppearance.configureWithDefaultBackground()
         navigationBarAppearance.backgroundColor = UIColor(red: 249/255, green: 249/255, blue: 249/255, alpha: 0.94)
         navigationBarAppearance.titleTextAttributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.systemBlue
+            NSAttributedString.Key.foregroundColor: UIColor.systemPurple
         ]
-//        na
         navigationBarAppearance.shadowColor = .lightGray
         
         navigationItem.standardAppearance = navigationBarAppearance
@@ -108,15 +111,15 @@ class HabitsViewController: UIViewController {
         )
         navigationItem.rightBarButtonItem?.tintColor = .systemPurple
         
-        let container = UIView()
-        container.translatesAutoresizingMaskIntoConstraints = false
-        container.addSubview(titleLabel)
-        
-        NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            titleLabel.centerYAnchor.constraint(equalTo: container.centerYAnchor)
-        ])
-        navigationItem.titleView = container
+//        let container = UIView()
+//        container.translatesAutoresizingMaskIntoConstraints = false
+//        container.addSubview(titleLabel)
+//        
+//        NSLayoutConstraint.activate([
+//            titleLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+//            titleLabel.centerYAnchor.constraint(equalTo: container.centerYAnchor)
+//        ])
+//        navigationItem.titleView = container
     }
     
     

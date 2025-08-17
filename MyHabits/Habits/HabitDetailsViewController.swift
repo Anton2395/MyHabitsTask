@@ -32,13 +32,19 @@ class HabitDetailsViewController: UIViewController {
     }
     
     func setupNavigationBarAppearance() {
+        
         let navigationBarAppearance = UINavigationBarAppearance()
         
         navigationBarAppearance.configureWithDefaultBackground()
         navigationBarAppearance.backgroundColor = UIColor(red: 249/255, green: 249/255, blue: 249/255, alpha: 0.94)
+        
         navigationBarAppearance.titleTextAttributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.systemBlue
+            NSAttributedString.Key.foregroundColor: UIColor.black
         ]
+        navigationBarAppearance.buttonAppearance.normal.titleTextAttributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.systemPurple
+        ]
+        
         navigationBarAppearance.shadowColor = .lightGray
         
         navigationItem.standardAppearance = navigationBarAppearance
@@ -132,8 +138,9 @@ class HabitDetailsViewController: UIViewController {
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Активность"
+        label.text = "АКТИВНОСТЬ"
         label.textColor = UIColor(red: 60/255, green: 60/255, blue: 67/255, alpha: 0.6)
+        label.font = UIFont(name: "SFProText-Regular", size: 13)
         
         headerView.addSubview(label)
         

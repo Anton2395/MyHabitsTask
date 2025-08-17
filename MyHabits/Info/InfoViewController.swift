@@ -124,9 +124,14 @@ class InfoViewController: UIViewController {
         
         navigationBarAppearance.configureWithDefaultBackground()
         navigationBarAppearance.backgroundColor = UIColor(red: 249/255, green: 249/255, blue: 249/255, alpha: 0.94)
+        
         navigationBarAppearance.titleTextAttributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.systemBlue
+            NSAttributedString.Key.foregroundColor: UIColor.black
         ]
+        navigationBarAppearance.buttonAppearance.normal.titleTextAttributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.systemPurple
+        ]
+        
         navigationBarAppearance.shadowColor = .lightGray
         
         navigationItem.standardAppearance = navigationBarAppearance
